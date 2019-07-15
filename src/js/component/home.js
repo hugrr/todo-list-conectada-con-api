@@ -11,20 +11,35 @@ export class Home extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			datosLista: [
-				{ label: "Make the bed", done: false },
-				{ label: "Walk the dog", done: false },
-				{ label: "Do the replits", done: false },
-				{ label: "Do the replits", done: false }
-			]
+			datosLista: [],
+			userActive: "1"
 		};
 
 		this.cambiarvalor = this.cambiarvalor.bind(this);
-		this.borrar = this.borrar.bind(this);
+
+		this.obtenerListado = this.obtenerListado.bind(this);
 	}
+
 	cambiarvalor(valor) {
 		let nuevo = this.state.datosLista;
-		console.log(valor);
+		fetch(
+			"https://3000-d0e70399-be87-4ff2-a18a-2aec5b5ae648.ws-us0.gitpod.io/api/todo/" +
+				this.state.userActive,
+			{
+				method: "POST",
+				body: JSON.stringify({
+					label: valor,
+					done: false,
+					username: "1"
+				}),
+				headers: {
+					"Content-Type": "application/json"
+				}
+			}
+		)
+			.then(res => res.json())
+			.then(response => this.obtenerListado());
+		/*
 		nuevo.push({
 			label: valor,
 			done: false
@@ -32,17 +47,47 @@ export class Home extends React.Component {
 		this.setState({
 			datosLista: nuevo
 		});
+        */
 	}
-	borrar(valor) {
-		let eliminar = this.state.datosLista;
-		eliminar = eliminar.filter(item => {
-			return item !== valor;
-		});
+	obtenerListado() {
+		fetch(
+			"https://3000-d0e70399-be87-4ff2-a18a-2aec5b5ae648.ws-us0.gitpod.io/api/todo/"
+		)
+			.then(resp => {
+				return resp.json();
+			})
+			.then(data => {
+				this.setState({ datosLista: data });
+			});
+	}
+	componentDidMount() {
+		/*
+		fetch(
+			"https://3000-d0e70399-be87-4ff2-a18a-2aec5b5ae648.ws-us0.gitpod.io/api/todo/",
+			{
+				method: "POST",
+				body: JSON.stringify(datosLista),
+				headers: {
+					"Content-Type": "application/json"
+				}
+			}
+		)
+			.then(res => res.json())
+			.then(response => console.log(resp));
+            */
 
-		this.setState({
-			datosLista: eliminar
-		});
+		this.obtenerListado();
 	}
+
+	//borrar(valor) {
+	//let eliminar = this.state.datosLista;
+	//eliminar = eliminar.filter(item => {
+	//	return item !== valor;
+	//});
+
+	//this.setState({
+	//	datosLista: eliminar
+	//});
 
 	render() {
 		return (

@@ -1,5 +1,5 @@
 import React from "react";
-import PropTypes from "prop-Types";
+import PropTypes from "prop-types";
 
 const Lista = props => {
 	const li = props.datosLista.map((item, i) => {
